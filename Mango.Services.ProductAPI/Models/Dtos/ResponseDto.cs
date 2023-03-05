@@ -2,9 +2,14 @@
 {
     public class ResponseDto
     {
-        public bool IsSuccess { get; set; }
+        public bool IsSuccess { get; set; } = true;
         public object? Result { get; set; }
         public string? DisplayMessage { get; set; }
         public List<string>? ErrorMessages { get; set; }
+        public void HandleException(Exception ex)
+        {
+            this.IsSuccess = false;
+            this.ErrorMessages = new List<string>() { ex.ToString() };
+        }
     }
 }
