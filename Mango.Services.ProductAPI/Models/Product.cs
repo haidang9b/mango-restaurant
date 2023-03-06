@@ -11,7 +11,7 @@ namespace Mango.Services.ProductAPI.Models
         [Range(0, 1000)]
         public double Price { get; set; }
         public string Description { get; set; }  = string.Empty;
-        public int CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
     }
 }
