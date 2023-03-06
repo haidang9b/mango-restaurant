@@ -1,8 +1,12 @@
+using Mango.Web;
+using Mango.Web.Services;
+using Mango.Web.Services.IServices;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+ConfigurationServices(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,3 +29,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void ConfigurationServices(IServiceCollection services)
+{
+    services.AddHttpClient<IProductService, ProductService>();
+    services.AddScoped<IProductService, ProductService>();
+    SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
+}
