@@ -74,5 +74,19 @@ namespace Mango.Services.ProductAPI.Controllers
             }
             return _response;
         }
+
+        [HttpPut]
+        public async Task<object> Put([FromBody] ProductDto productDto)
+        {
+            try
+            {
+                _response.Result = await _productRepository.SaveProduct(productDto);
+            }
+            catch (Exception ex)
+            {
+                _response.HandleException(ex);
+            }
+            return _response;
+        }
     }
 }
