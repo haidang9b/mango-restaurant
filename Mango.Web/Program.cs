@@ -34,5 +34,6 @@ app.Run();
 void ConfigurationServices(IServiceCollection services)
 {
     services.AddHttpClient<IProductService, ProductService>();
+    services.AddScoped<IProductService, ProductService>();
     SD.ProductAPIBase = builder.Configuration["ServiceUrls:ProductAPI"];
 }

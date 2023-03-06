@@ -5,8 +5,8 @@ namespace Mango.Web.Services
 {
     public class ProductService : BaseService, IProductService
     {
-        private readonly IHttpContextFactory _clientFactory;
-        public ProductService(IHttpContextFactory clientFactory)
+        private readonly IHttpClientFactory _clientFactory;
+        public ProductService(IHttpClientFactory clientFactory): base(clientFactory) 
         {
             _clientFactory = clientFactory;
         }
