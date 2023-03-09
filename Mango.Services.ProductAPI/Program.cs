@@ -73,7 +73,7 @@ app.Run();
     services.AddAuthentication("Bearer")
         .AddJwtBearer("Bear", options =>
         {
-            options.Authority = "https://localhost:7245";
+            options.Authority = "https://localhost:7281";
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false

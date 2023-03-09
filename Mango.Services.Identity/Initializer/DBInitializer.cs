@@ -33,7 +33,7 @@ namespace Mango.Services.Identity.Initializer
 
             ApplicationUser adminUser = new ApplicationUser()
             {
-                UserName = "admin",
+                UserName = "admin1@gmail.com",
                 Email = "admin1@gmail.com",
                 EmailConfirmed = true,
                 PhoneNumber = "111111111111",
@@ -41,7 +41,7 @@ namespace Mango.Services.Identity.Initializer
                 LastName = "Admin"
             };
 
-            _userManager.CreateAsync(adminUser, "123456").GetAwaiter().GetResult();
+            _userManager.CreateAsync(adminUser, "Admin123*").GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(adminUser, SD.Admin).GetAwaiter().GetResult();
 
             var tempAdminUser = _userManager.AddClaimsAsync(adminUser, new Claim[] {
@@ -53,7 +53,7 @@ namespace Mango.Services.Identity.Initializer
 
             ApplicationUser customerUser = new ApplicationUser()
             {
-                UserName = "customer",
+                UserName = "customer1@gmail.com",
                 Email = "customer1@gmail.com",
                 EmailConfirmed = true,
                 PhoneNumber = "111111111111",
@@ -61,7 +61,7 @@ namespace Mango.Services.Identity.Initializer
                 LastName = "Customer"
             };
 
-            _userManager.CreateAsync(customerUser, "123456").GetAwaiter().GetResult();
+            _userManager.CreateAsync(customerUser, "Customer123*").GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(customerUser, SD.Customer).GetAwaiter().GetResult();
 
             var tempCustomerUser = _userManager.AddClaimsAsync(customerUser, new Claim[] {
