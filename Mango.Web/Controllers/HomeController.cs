@@ -16,6 +16,7 @@ namespace Mango.Web.Controllers
 
         public IActionResult Index()
         {
+            var item = User.Identity.Name;
             return View();
         }
 

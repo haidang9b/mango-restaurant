@@ -1,7 +1,6 @@
 using Mango.Web;
 using Mango.Web.Services;
 using Mango.Web.Services.IServices;
-using Microsoft.AspNetCore.Authentication;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +51,7 @@ void ConfigurationServices(IServiceCollection services)
             options.ClientSecret = "secret";
             options.ResponseType = "code";
             options.TokenValidationParameters.NameClaimType = "name";
-            options.TokenValidationParameters.NameClaimType = "role";
+            options.TokenValidationParameters.RoleClaimType = "role";
             options.Scope.Add("mango");
             options.SaveTokens = true;
         });
