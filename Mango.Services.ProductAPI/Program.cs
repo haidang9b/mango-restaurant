@@ -2,6 +2,7 @@ using AutoMapper;
 using Mango.Services.ProductAPI;
 using Mango.Services.ProductAPI.DBContexts;
 using Mango.Services.ProductAPI.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -13,9 +14,30 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.Authority = "https://localhost:7281/";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = false
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ApiScope", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "mango");
+    });
+});
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.EnableAnnotations();
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mango.Services.ProductAPI", Version = "V1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"Enter 'Bearer' [space] and your token",
@@ -24,25 +46,25 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                Reference=new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer",
+                    Type=ReferenceType.SecurityScheme,
+                    Id = "Bearer"
                 },
-                Scheme = "OAuth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
+                Scheme = "oauth2",
+                Name="Bearer",
+                In=ParameterLocation.Header
             },
             new List<string>()
         }
     });
 });
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 ConfigurationSerivce(builder.Services);
@@ -56,11 +78,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
 
 
@@ -70,21 +90,4 @@ app.Run();
     services.AddSingleton(mapper);
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     services.AddScoped<IProductRepository, ProductRepository>();
-    services.AddAuthentication("Bearer")
-        .AddJwtBearer("Bear", options =>
-        {
-            options.Authority = "https://localhost:7281";
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = false
-            };
-        });
-    services.AddAuthorization(options =>
-    {
-        options.AddPolicy("ApiScope", policy =>
-        {
-            policy.RequireAuthenticatedUser();
-            policy.RequireClaim("scope", "mango");
-        });
-    });
 }
