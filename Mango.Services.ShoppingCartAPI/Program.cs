@@ -1,6 +1,7 @@
 using AutoMapper;
 using Mango.Services.ShoppingCartAPI;
 using Mango.Services.ShoppingCartAPI.DbContexts;
+using Mango.Services.ShoppingCartAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -92,4 +93,5 @@ void ConfigurationSerivce(IServiceCollection services)
     IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
     services.AddSingleton(mapper);
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    services.AddScoped<ICartRepository, CartRepository>();
 }
