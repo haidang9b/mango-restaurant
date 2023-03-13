@@ -107,7 +107,7 @@ namespace Mango.Services.ShoppingCartAPI.Repositories
                 CartHeader = await _dbContext.CartHeaders.FirstOrDefaultAsync(item => item.UserId == userId)
             };
             cart.CartDetails = _dbContext.CartDetails
-                .Where(item => item.CartDetailsId == cart.CartHeader.CartHeaderId).Include(u => u.Product);
+                .Where(item => item.CartHeaderId == cart.CartHeader.CartHeaderId).Include(u => u.Product);
             return _mapper.Map<CartDto>(cart);
         }
 
