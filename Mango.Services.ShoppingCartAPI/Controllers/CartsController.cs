@@ -1,4 +1,5 @@
-﻿using Mango.Services.ShoppingCartAPI.Models.Dto;
+﻿using Mango.Services.ShoppingCartAPI.Models;
+using Mango.Services.ShoppingCartAPI.Models.Dto;
 using Mango.Services.ShoppingCartAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,35 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             try
             {
                 _response.Result = await _cartRepository.RemoveFromCart(cartDetailsId);
+            }
+            catch (Exception ex)
+            {
+                _response.HandleException(ex);
+            }
+            return _response;
+        }
+
+        [HttpPost("ApplyCoupon")]
+        public async Task<object> ApplyCoupon([FromBody] CartDto cartDto)
+        {
+            try
+            {
+                _response.Result = await _cartRepository.ApplyCoupon(cartDto.CartHeader.UserId, 
+                                    cartDto.CartHeader.CouponCode);
+            }
+            catch (Exception ex)
+            {
+                _response.HandleException(ex);
+            }
+            return _response;
+        }
+
+        [HttpPost("RemoveCoupon")]
+        public async Task<object> RemoveCoupon([FromBody] string userId)
+        {
+            try
+            {
+                _response.Result = await _cartRepository.RemoveCoupon(userId);
             }
             catch (Exception ex)
             {
