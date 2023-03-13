@@ -103,5 +103,19 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             }
             return _response;
         }
+
+        [HttpPost("Checkout")]
+        public async Task<object> Checkout([FromBody] string userId)
+        {
+            try
+            {
+                _response.Result = await _cartRepository.RemoveCoupon(userId);
+            }
+            catch (Exception ex)
+            {
+                _response.HandleException(ex);
+            }
+            return _response;
+        }
     }
 }
