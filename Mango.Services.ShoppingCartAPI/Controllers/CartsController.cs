@@ -46,7 +46,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             return _response;
         }
 
-        [HttpPost("UpdateCart")]
+        [HttpPut("UpdateCart")]
         public async Task<object> UpdateCart(CartDto cartDto)
         {
             try
@@ -60,7 +60,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
             return _response;
         }
 
-        [HttpPost("RemoveCart")]
+        [HttpDelete("RemoveCart/{cartDetailsId}")]
         public async Task<object> RemoveCart([FromBody]int cartDetailsId)
         {
             try
