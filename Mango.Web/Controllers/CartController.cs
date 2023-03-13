@@ -40,6 +40,35 @@ namespace Mango.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var response = await _cartService.RemoveCouponAsync<ResponseDto>(cartDto.CartHeader.UserId, accessToken);
+
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ApplyCoupon(CartDto cartDto)
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var response = await _cartService.ApplyCouponAsync<ResponseDto>(cartDto, accessToken);
+
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
