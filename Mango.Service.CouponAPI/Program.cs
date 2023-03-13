@@ -1,6 +1,7 @@
 using AutoMapper;
 using Mango.Service.CouponAPI;
 using Mango.Service.CouponAPI.DbContexts;
+using Mango.Service.CouponAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -89,4 +90,5 @@ void ConfigurationSerivce(IServiceCollection services)
     IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
     services.AddSingleton(mapper);
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    services.AddScoped<ICouponRepository, CouponRepository>();
 }
