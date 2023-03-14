@@ -1,5 +1,7 @@
 using AutoMapper;
 using Mango.Services.OrderAPI.DbContexts;
+using Mango.Services.OrderAPI.Extensions;
+using Mango.Services.OrderAPI.Messaging;
 using Mango.Services.OrderAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -83,7 +85,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseAzureServiceBusConsumer();
 app.Run();
 void ConfigurationSerivce(IServiceCollection services)
 {
@@ -96,4 +98,5 @@ void ConfigurationSerivce(IServiceCollection services)
 
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     services.AddSingleton(new OrderRepository(optionsBuilder.Options));
+    services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 }
