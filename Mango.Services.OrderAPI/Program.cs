@@ -1,5 +1,6 @@
 using AutoMapper;
 using Mango.Services.OrderAPI.DbContexts;
+using Mango.Services.OrderAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -90,4 +91,9 @@ void ConfigurationSerivce(IServiceCollection services)
     services.AddSingleton(mapper);
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     services.AddScoped<ICouponRepository, CouponRepository>();*/
+
+    var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+
+    optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    services.AddSingleton(new OrderRepository(optionsBuilder.Options));
 }
