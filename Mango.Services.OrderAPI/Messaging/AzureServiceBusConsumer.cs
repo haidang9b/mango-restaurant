@@ -9,10 +9,19 @@ namespace Mango.Services.OrderAPI.Messaging
 {
     public class AzureServiceBusConsumer
     {
+        private readonly string _serviceBusConnectionString;
+        private readonly string _subscriptionName;
+        private readonly string _checkoutMessageTopic;
         private readonly OrderRepository _orderRepository;
-        public AzureServiceBusConsumer(OrderRepository orderRepository)
+        private readonly IConfiguration _configuration;
+        public AzureServiceBusConsumer(OrderRepository orderRepository, IConfiguration configuration)
         {
             _orderRepository = orderRepository;
+            _configuration = configuration;
+
+            _serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
+            _subscriptionName = _configuration.GetValue<string>("SubscriptionName");
+            _checkoutMessageTopic = _configuration.GetValue<string>("CheckoutMessageTopic");
         }
         private async Task OnCheckoutMessageReceived(ProcessMessageEventArgs args)
         {
