@@ -23,7 +23,10 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Messages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mango.MessageBus\Mango.MessageBus.csproj" />
   </ItemGroup>
 
 </Project>

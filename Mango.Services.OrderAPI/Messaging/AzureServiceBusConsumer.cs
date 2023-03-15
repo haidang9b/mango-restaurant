@@ -1,4 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
+using Mango.MessageBus;
 using Mango.Services.OrderAPI.Messages;
 using Mango.Services.OrderAPI.Models;
 using Mango.Services.OrderAPI.Repositories;
@@ -12,17 +13,21 @@ namespace Mango.Services.OrderAPI.Messaging
         private readonly string _serviceBusConnectionString;
         private readonly string _subscriptionName;
         private readonly string _checkoutMessageTopic;
+        private readonly string _orderPaymentProcessTopic;
         private readonly OrderRepository _orderRepository;
         private readonly IConfiguration _configuration;
         private ServiceBusProcessor _checkoutProcessor;
-        public AzureServiceBusConsumer(OrderRepository orderRepository, IConfiguration configuration)
+        private readonly IMessageBus _messageBus;
+        public AzureServiceBusConsumer(OrderRepository orderRepository, IConfiguration configuration, IMessageBus messageBus)
         {
             _orderRepository = orderRepository;
             _configuration = configuration;
+            _messageBus = messageBus;
 
             _serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
             _subscriptionName = _configuration.GetValue<string>("SubscriptionName");
             _checkoutMessageTopic = _configuration.GetValue<string>("CheckoutMessageTopic");
+            _orderPaymentProcessTopic = _configuration.GetValue<string>("OrderPaymentProcessTopic");
 
             var client = new ServiceBusClient(_serviceBusConnectionString);
             _checkoutProcessor = client.CreateProcessor(_checkoutMessageTopic, _subscriptionName);
@@ -87,6 +92,24 @@ namespace Mango.Services.OrderAPI.Messaging
             }
 
             await _orderRepository.AddOrder(orderHeader);
+            PaymentRequestMessage paymentRequestMessage = new ()
+            {
+                Name = orderHeader.FirstName + " " + orderHeader.LastName,
+                CardNumber = orderHeader.CardNumber,
+                CVV = checkoutHeaderDto.CVV,
+                ExpiryMonthYear = orderHeader.ExpiryMonthYear,
+                OrderId = orderHeader.OrderHeaderId,
+                OrderTotal = orderHeader.OrderTotal,
+            };
+            try
+            {
+                await _messageBus.PublishMessage(paymentRequestMessage, _orderPaymentProcessTopic);
+                await args.CompleteMessageAsync(args.Message);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
