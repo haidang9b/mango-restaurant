@@ -90,11 +90,6 @@ app.UseAzureServiceBusConsumer();
 app.Run();
 void ConfigurationSerivce(IServiceCollection services)
 {
-    /*IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-    services.AddSingleton(mapper);
-    services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-    services.AddScoped<ICouponRepository, CouponRepository>();*/
-
     var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
