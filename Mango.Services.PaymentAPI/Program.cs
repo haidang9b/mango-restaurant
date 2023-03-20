@@ -1,5 +1,5 @@
 using Mango.MessageBus;
-using Mango.Services.OrderAPI.Extensions;
+using Mango.Services.PaymentAPI.Extensions;
 using Mango.Services.PaymentAPI.Messaging;
 using PaymentProcessor;
 
