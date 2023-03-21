@@ -39,10 +39,12 @@ void ConfigurationServices(IServiceCollection services)
     var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+   
+
     services.AddSingleton(new EmailRepository(optionsBuilder.Options));
     services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
     services.AddScoped<IEmailRepository, EmailRepository>();
     services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
-
+    services.AddHostedService<RabbitMQEmailConsumer>();
 }

@@ -99,4 +99,6 @@ void ConfigurationSerivce(IServiceCollection services)
     services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
     services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
     services.AddSingleton<IRabbitMQOrderMessageSender, RabbitMQOrderMessageSender>();
+    services.AddHostedService<RabbitMQPaymentConsumer>();
+
 }
