@@ -1,7 +1,9 @@
 using AutoMapper;
+using Mango.MessageBus;
 using Mango.Services.OrderAPI.DbContexts;
 using Mango.Services.OrderAPI.Extensions;
 using Mango.Services.OrderAPI.Messaging;
+using Mango.Services.OrderAPI.RabbitMQSender;
 using Mango.Services.OrderAPI.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -89,14 +91,14 @@ app.UseAzureServiceBusConsumer();
 app.Run();
 void ConfigurationSerivce(IServiceCollection services)
 {
-    /*IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-    services.AddSingleton(mapper);
-    services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-    services.AddScoped<ICouponRepository, CouponRepository>();*/
-
     var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
     optionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    services.AddHostedService<RabbitMQCheckoutConsumer>();
     services.AddSingleton(new OrderRepository(optionsBuilder.Options));
     services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+    services.AddSingleton<IMessageBus, AzureServiceMessageBus>();
+    services.AddSingleton<IRabbitMQOrderMessageSender, RabbitMQOrderMessageSender>();
+    services.AddHostedService<RabbitMQPaymentConsumer>();
+
 }
