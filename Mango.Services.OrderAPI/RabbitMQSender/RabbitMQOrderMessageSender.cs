@@ -4,15 +4,15 @@ using RabbitMQ.Client;
 using System.Text;
 using System.Threading.Channels;
 
-namespace Mango.Services.ShoppingCartAPI.RabbitMQSender
+namespace Mango.Services.OrderAPI.RabbitMQSender
 {
-    public class RabbitMQCartMessageSender : IRabbitMQCartMessageSender
+    public class RabbitMQOrderMessageSender : IRabbitMQOrderMessageSender
     {
         private readonly string _hostname;
         private readonly string _username;
         private readonly string _password;
         private IConnection _connection;
-        public RabbitMQCartMessageSender()
+        public RabbitMQOrderMessageSender()
         {
             _hostname = "localhost";
             _username = "guest";
@@ -43,7 +43,7 @@ namespace Mango.Services.ShoppingCartAPI.RabbitMQSender
                 };
                 _connection = factory.CreateConnection();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -51,7 +51,7 @@ namespace Mango.Services.ShoppingCartAPI.RabbitMQSender
 
         private bool IsConnected()
         {
-            if(_connection != null )
+            if (_connection != null)
             {
                 return true;
             }
