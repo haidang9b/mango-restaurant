@@ -13,9 +13,10 @@ namespace Mango.Services.OrderAPI.Messaging
     {
         private IConnection _connection;
         private IModel _channel;
-        private const string ExchangeName = "PublishSubscribePaymentUpdate_Exchange";
+        private const string ExchangeName = "DirectPaymentUpdate_Exchange";
         private readonly OrderRepository _orderRepository;
         string queueName = "";
+        private const string PaymentOrderUpdateQueueName = "PaymentOrderUpdateQueueName";
 
         public RabbitMQPaymentConsumer(OrderRepository orderRepository)
         {
@@ -29,9 +30,9 @@ namespace Mango.Services.OrderAPI.Messaging
 
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout);
-            queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queueName, ExchangeName, "");
+            _channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
+            _channel.QueueDeclare(PaymentOrderUpdateQueueName, false, false, false, null);
+            _channel.QueueBind(PaymentOrderUpdateQueueName, ExchangeName, "PaymentOrder");
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,7 +50,7 @@ namespace Mango.Services.OrderAPI.Messaging
 
             }; // ch is channel, ea is event args
 
-            _channel.BasicConsume(queueName, false, consumer);
+            _channel.BasicConsume(PaymentOrderUpdateQueueName, false, consumer);
             return Task.CompletedTask;
         }
 
